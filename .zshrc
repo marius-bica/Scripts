@@ -269,6 +269,9 @@ if [[ -o zle ]]; then
     bindkey -e                 # emacs key bindings
     bindkey ' ' magic-space    # also do history expansion on space
     bindkey '^I' complete-word # complete on tab, leave expansion to _expand
+    bindkey "^[[1;5C" forward-word
+    bindkey "^[[1;5D" backward-word
+
 
     # }}}
 
@@ -433,3 +436,25 @@ if [[ -f /etc/zshrc-$HOST ]]; then
 fi
 
 # }}}
+
+
+#versioning branch info
+
+setopt prompt_subst
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' actionformats \
+    '%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
+zstyle ':vcs_info:*' formats       \
+    '%F{5}[%F{2}%b%F{5}]%f '
+zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b%F{1}:%F{3}%r'
+
+zstyle ':vcs_info:*' enable git cvs svn
+
+# or use pre_cmd, see man zshcontrib
+vcs_info_wrapper() {
+  vcs_info
+  if [ -n "$vcs_info_msg_0_" ]; then
+    echo "%{$fg[grey]%}${vcs_info_msg_0_}%{$reset_color%}$del"
+  fi
+}
+RPROMPT=$'$(vcs_info_wrapper)'
