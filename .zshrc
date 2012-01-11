@@ -214,13 +214,36 @@ prompt_tavy_setup () {
         ps=$ps$'\e]0;%n@%m:%~\a'        # window title
         ps="${ps}%}"
     fi
+    
+    #versioning branch info
+
+    setopt prompt_subst
+    autoload -Uz vcs_info
+    zstyle ':vcs_info:*' actionformats \
+        '%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
+    zstyle ':vcs_info:*' formats       \
+        '%F{5}[%F{2}%b%F{5}]%f '
+    zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b%F{1}:%F{3}%r'
+
+    zstyle ':vcs_info:*' enable git cvs svn
+
+    # or use pre_cmd, see man zshcontrib
+    vcs_info_wrapper() {
+    vcs_info
+    if [ -n "$vcs_info_msg_0_" ]; then
+        echo "%{$fg[grey]%}${vcs_info_msg_0_}%{$reset_color%}$del"
+    fi
+    }
+    VERINFO=$'$(vcs_info_wrapper)'    
+    
+    
     hostnamex=`hostname`
     ps="${ps}${c_user}%n${c_user_off}@"                                 # user@
     ps="${ps}${c_host}${hostnamex}${c_host_off}%B:%b"                             # host:
     ps="${ps}${c_pwd}%\$[COLUMNS/2]<...<%~%<<${c_off}"                  # pwd
 #    ps="${ps}%(${sl}L. <sh%L>.)"                                        # sh#
     ps="${ps}%(1j. ${c_jobs}[%j]${c_off}.)%(?.. ${c_err}%?${c_off})"    # jobs, err
-    PS1="${ps} %B%(!.#.$)%b${c_prompt_off} "                 # '$' or '#'
+    PS1="${ps} ${VERINFO}%B%(!.#.$)%b${c_prompt_off} "                 # '$' or '#'
 
     if eval '[[ -o promptsp ]] 2>/dev/null'; then
         setopt prompt_cr prompt_sp
@@ -436,25 +459,3 @@ if [[ -f /etc/zshrc-$HOST ]]; then
 fi
 
 # }}}
-
-
-#versioning branch info
-
-setopt prompt_subst
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' actionformats \
-    '%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
-zstyle ':vcs_info:*' formats       \
-    '%F{5}[%F{2}%b%F{5}]%f '
-zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b%F{1}:%F{3}%r'
-
-zstyle ':vcs_info:*' enable git cvs svn
-
-# or use pre_cmd, see man zshcontrib
-vcs_info_wrapper() {
-  vcs_info
-  if [ -n "$vcs_info_msg_0_" ]; then
-    echo "%{$fg[grey]%}${vcs_info_msg_0_}%{$reset_color%}$del"
-  fi
-}
-RPROMPT=$'$(vcs_info_wrapper)'
