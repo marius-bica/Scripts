@@ -25,7 +25,8 @@ zmodload -ap zsh/mapfile mapfile
 typeset -U cdpath fpath
 
 # Autoload some functions
-autoload -U colors nslookup zcalc zmv
+autoload -U colors nslookup zcalc zmv spectrum
+autoload -Uz sticky-note
 
 # Ensure ~/.zsh exists
 [[ -d ~/.zsh ]] || mkdir -p ~/.zsh
@@ -141,7 +142,7 @@ fi
 
 if [[ -z $LS_COLORS ]]; then
     if (( $+commands[dircolors] )) then
-        eval $(dircolors -b)
+        eval $(dircolors -b | sed 's/ex=01;32/ex=00;32/g')
     else
         LS_COLORS='no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.deb=01;31:*.jpg=01;35:*.gif=01;35:*.bmp=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.mpg=01;37:*.avi=01;37:*.gl=01;37:*.dl=01;37:'
     fi
@@ -191,16 +192,19 @@ prompt_tavy_setup () {
 
     if [[ $NUMCOLORS -gt 2 ]]; then
         colors                  # get colors
+        spectrum
         c_off="%{$reset_color%}"
+        
+        
 
 #       if [[ -n $REMOTEHOST ]]; then
-            c_host="%{$fg_bold[green]%}" c_host_off=$c_off
+            c_host="%{$FX[bold]$FG[022]%}" c_host_off=$c_off
 #       fi
 #       if [[ $EUID = 0 ]]; then
-            c_user="%{$fg_bold[red]%}" c_user_off=$c_off
+            c_user="%{$FX[bold]$FG[160]%}" c_user_off=$c_off
             c_prompt="%{$fg[red]%}" c_prompt_off=$c_off
 #       fi
-        c_pwd="%{$fg_bold[cyan]%}"
+        c_pwd="%{$FX[bold]$FG[069]%}"
         c_jobs="%{$fg_bold[yellow]%}"
         c_err="%{$bg_bold[red]%}"
     fi
@@ -258,6 +262,8 @@ prompt_tavy_setup () {
         PS1="%B%S%{#%}%s%b%{$PS1"
     fi
 }
+zstyle :sticky-note theme bg white fg black
+
 prompt_tavy_setup
 
 # }}}
