@@ -298,9 +298,8 @@ if [[ -o zle ]]; then
     bindkey -e                 # emacs key bindings
     bindkey ' ' magic-space    # also do history expansion on space
     bindkey '^I' complete-word # complete on tab, leave expansion to _expand
-    bindkey "^[[1;5C" forward-word
-    bindkey "^[[1;5D" backward-word
-
+    bindkey "\e\e[D" backward-word
+    bindkey "\e\e[C" forward-word
 
     # }}}
 
