@@ -134,11 +134,9 @@ if [[ -z $PAGER ]]; then
     export PAGER
 fi
 
-export LESSCHARSET=latin1
-export LESS="-MM -F -i -Q -X"
-if (( $+commands[lesspipe] )) then
-    eval $(lesspipe)
-fi
+export LESSOPEN="| /usr/share/source-highlight/src-hilite-lesspipe.sh %s"
+export LESSCHARSET=utf-8
+export LESS="-MM -F -i -Q -X -R"
 
 if [[ -z $LS_COLORS ]]; then
     if (( $+commands[dircolors] )) then
