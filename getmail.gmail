@@ -1,0 +1,22 @@
+[retriever]
+type = SimpleIMAPSSLRetriever
+server = imap.gmail.com
+mailboxes = ("[Gmail]/All Mail",)
+username = 
+password = 
+
+[destination]
+type = Maildir
+path = ~/gmail-archive/
+
+[options]
+verbose = 2
+message_log = ~/.getmail/log
+
+# retrieve only new messages
+# if set to true it will re-download ALL messages every time!
+read_all = false
+
+# do not alter messages
+delivered_to = false
+received = false                                                                                                                                                                                   
