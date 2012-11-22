@@ -462,3 +462,9 @@ if [[ -f /etc/zshrc-$HOST ]]; then
 fi
 
 # }}}
+
+# https://github.com/zsh-users/zsh-syntax-highlighting
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[path]='bold'
+
