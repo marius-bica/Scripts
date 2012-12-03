@@ -292,6 +292,8 @@ if [[ -o zle ]]; then
     bindkey "\eOF" end-of-line
     bindkey "\e[H" beginning-of-line
     bindkey "\e[F" end-of-line
+    bindkey '\e[A' history-beginning-search-backward
+    bindkey '\e[B' history-beginning-search-forward
 
     bindkey -e                 # emacs key bindings
     bindkey ' ' magic-space    # also do history expansion on space
