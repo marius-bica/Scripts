@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# mysql tunnel to remote server via jumphost
+
+# ports on the jumphost servers
+Ports[1]=10008
+Ports[2]=10009
+Ports[3]=10010
+Ports[4]=10011
+Ports[5]=10012
+Ports[6]=10013
+Ports[7]=10014
+
+# jumphost server
+JUMPHOST=''
+
+count=${#Ports[@]}
+if [[ -z $1 || $1 -gt $count || $1 -lt 1 ]]; then
+    echo -e 'Usage:\ntunnel VipNo [LocalPort]'
+    echo 'default LocalPort = 3306'
+    echo -e '\nJumphosts ports:'
+    echo -e "\nVipNo\tPort\n"
+    for (( i = 1 ; i <= $count ; i++ ))
+    do
+        echo -e $i "\t("${Ports[$i]}")"
+    done
+else
+    if [ -z $2 ]; then
+        LocalPort=3306
+    else
+        LocalPort=$2
+    fi
+    
+    portCheck="ssh -fNg -L $LocalPort:127.0.0.1:"
+    oldPID=`ps ax | grep "$portCheck" | grep -iv "grep" | cut -d"?" -f1`
+    
+    if [ -z $oldPID ]; then
+        echo 'No previous process found, setting tunnel...'
+    else
+        echo "Found previous tunnel bound to port $LocalPort (pid $oldPID), refreshing tunnel..."
+        kill -15 $oldPID
+        if [ "$?" = "0" ]; then
+            echo "Process killed successfully"
+        else
+            echo "Cannot kill process $oldPID, you need to kill it manually"
+            exit 1
+        fi
+    fi
+    
+    ssh -fNg -L $LocalPort:127.0.0.1:${Ports[$1]} $JUMPHOST
+    
+    if [ "$?" = "0" ]; then
+        echo "Tunnel ready"
+    else
+        echo "Tunnel cannot be created"
+        exit 1
+    fi
+fi
