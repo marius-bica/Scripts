@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# files to monitor
+
+if [ -z $1 ]; then
+    TESTENV='production'
+else 
+    TESTENV='staging'
+fi
+
+Files[1]=""
+Files[2]=""
+Files[3]=""
+Files[4]=""
+Files[5]=""
+Files[6]=""
+
+# ports 
+RemotePort=port_no_here
+LocalPort=port_no_here
+
+# jumphost server
+JUMPHOST=''
+
+configFile=$HOME/bin/.logmonitorrc
+
+portCheck="ssh -fNg -L $LocalPort:127.0.0.1:"
+oldPID=`ps ax | grep "$portCheck" | grep -iv "grep" | cut -d"?" -f1`
+
+if [ -z $oldPID ]; then
+    echo 'No previous process found, setting tunnel...'
+else
+    echo "Found previous tunnel bound to port $LocalPort (pid $oldPID), refreshing tunnel..."
+    kill -15 $oldPID
+    if [ "$?" = "0" ]; then
+        echo "Process killed successfully"
+    else
+        echo "Cannot kill process $oldPID, you need to kill it manually"
+        exit 1
+    fi
+fi
+
+ssh -fNg -L $LocalPort:127.0.0.1:$RemotePort $JUMPHOST
+
+for f in "${Files[@]}"
+do
+    allFiles="${allFiles} ${f}"
+done
+
+command="ssh username@127.0.0.1 -p $LocalPort tail -f $allFiles"
+filter="grcat $HOME/.grc/conf.monitor"
+
+if [ -f $configFile ]; then
+
+    source $configFile
+    
+    if [ -z "$exclude" ]; then
+        echo 'no exclude found, skipping...'
+        $command | $filter
+    else
+        $command | $filter | egrep -v "$exclude"
+    fi
+else
+    $command | $filter
+fi
