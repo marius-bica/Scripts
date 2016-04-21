@@ -157,12 +157,14 @@ alias rm='nocorrect rm -i'
 alias mkdir='nocorrect mkdir'
 # alias ls='ls -alphF --color=auto'
 alias ls='ls --color=auto'
+alias lshtr='ls -lhtr'
 alias d='ls'
 # alias l='ls -lA'
 alias lsd='ls -ld *(-/DN)'
 alias s='cd ..'
 alias p='cd -'
 alias free='free -m'
+alias gb=gulp build
 
 # General aliases.
 # alias -g L="|less"
@@ -192,8 +194,8 @@ prompt_tavy_setup () {
         colors                  # get colors
         spectrum
         c_off="%{$reset_color%}"
-        
-        
+
+
 
 #       if [[ -n $REMOTEHOST ]]; then
             c_host="%{$FX[bold]$FG[022]%}" c_host_off=$c_off
@@ -216,7 +218,7 @@ prompt_tavy_setup () {
         ps=$ps$'\e]0;%n@%m:%~\a'        # window title
         ps="${ps}%}"
     fi
-    
+
     #versioning branch info
 
     setopt prompt_subst
@@ -231,14 +233,16 @@ prompt_tavy_setup () {
 
     # or use pre_cmd, see man zshcontrib
     vcs_info_wrapper() {
-    vcs_info
-    if [ -n "$vcs_info_msg_0_" ]; then
-        echo "%{$fg[grey]%}${vcs_info_msg_0_}%{$reset_color%}$del"
-    fi
+        vcs_info
+        if [ -n "$vcs_info_msg_0_" ]; then
+            echo -n "%{$fg[grey]%}${vcs_info_msg_0_}%{$reset_color%}$del"
+        fi
+        if [ "$(git stash list 2>/dev/null)" != "" ]; then
+            echo "%{$fg_bold[blue]%}⦿ %{$reset_color%}";
+        fi
     }
-    VERINFO=$'$(vcs_info_wrapper)'    
-    
-    
+    VERINFO=$'$(vcs_info_wrapper)'
+
     hostnamex=`hostname`
     ps="${ps}${c_user}%n${c_user_off}@"                                 # user@
     ps="${ps}${c_host}${hostnamex}${c_host_off}%B:%b"                             # host:
