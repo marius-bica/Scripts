@@ -165,6 +165,7 @@ alias s='cd ..'
 alias p='cd -'
 alias free='free -m'
 alias gb=gulp build
+alias pcp='rsync -ah --progress --no-perms --no-owner --no-group --no-times'
 
 # General aliases.
 # alias -g L="|less"
