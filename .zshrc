@@ -243,6 +243,7 @@ prompt_tavy_setup () {
         fi
     }
     VERINFO=$'$(vcs_info_wrapper)'
+    NEWLINE=$'\n'
 
     hostnamex=`hostname`
     ps="${ps}${c_user}%n${c_user_off}@"                                 # user@
@@ -250,7 +251,7 @@ prompt_tavy_setup () {
     ps="${ps}${c_pwd}%\$[COLUMNS/2]<...<%~%<<${c_off}"                  # pwd
 #    ps="${ps}%(${sl}L. <sh%L>.)"                                        # sh#
     ps="${ps}%(1j. ${c_jobs}[%j]${c_off}.)%(?.. ${c_err}%?${c_off})"    # jobs, err
-    PS1="${ps} ${VERINFO}%B%(!.#.$)%b${c_prompt_off} "                 # '$' or '#'
+    PS1="${ps} ${VERINFO}${NEWLINE}%B%(!.#.$)%b${c_prompt_off} "                 # '$' or '#'
 
     if eval '[[ -o promptsp ]] 2>/dev/null'; then
         setopt prompt_cr prompt_sp
