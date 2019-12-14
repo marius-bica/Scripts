@@ -1,0 +1,16 @@
+# Enable the default ratio group.
+ratio.enable=
+# Change the limits, the defaults should be sufficient.
+# Upload to a minimum ratio of 1.0
+ratio.min.set=200
+# Upload to a maximum ratio of 2.0
+# ratio.max.set=200
+# Upload a minimum of 250 MB
+ratio.upload.set=250M
+# upload_rate = 300
+# enable session
+session = ~/.rtorrent.session
+
+scgi_port = localhost:5000
+dht = auto
+# pieces.sync.always_safe.set=1
